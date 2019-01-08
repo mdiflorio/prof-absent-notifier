@@ -17,7 +17,7 @@ async function pronote_scraper() {
   const wait = new Promise(resolve => {
     setTimeout(() => {
       resolve();
-    }, 1000);
+    }, 2000);
   });
 
   await Promise.all([
@@ -25,6 +25,7 @@ async function pronote_scraper() {
     page.waitForNavigation({ waitUntil: "networkidle0" }),
     wait
   ]);
+
   // Get page HTML
   let bodyHTML = await page.evaluate(() => document.body.innerHTML);
 
@@ -46,6 +47,8 @@ async function pronote_scraper() {
       const note = $(this).text();
       absence.push({ subject, note });
     });
+
+  await browser.close();
 
   return absence;
 }
