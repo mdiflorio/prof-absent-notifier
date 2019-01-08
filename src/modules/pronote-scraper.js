@@ -6,9 +6,8 @@ async function pronote_scraper() {
   const { PRONOTE_SCHOOL, PRONOTE_USER, PRONOTE_PASS } = process.env;
   const PRONOTE_URL = `https://${PRONOTE_SCHOOL}.index-education.net/pronote/eleve.html?login=true`;
 
-  const browser = await puppeteer.launch({ headless: false });
+  const browser = await puppeteer.launch({ headless: true });
   const page = await browser.newPage();
-  await page.setViewport({ width: 1200, height: 720 });
   await page.goto(PRONOTE_URL, { waitUntil: "networkidle0" }); // wait until page load
 
   // Login user
