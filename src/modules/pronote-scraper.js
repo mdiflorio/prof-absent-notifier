@@ -4,26 +4,22 @@ const puppeteer = require("puppeteer");
 
 async function pronote_scraper() {
   const { PRONOTE_SCHOOL, PRONOTE_USER, PRONOTE_PASS } = process.env;
-  const PRONOTE_URL = `https://${PRONOTE_SCHOOL}.index-education.net/pronote/eleve.html?login=true`;
+  const PRONOTE_URL = `https://${PRONOTE_SCHOOL}.index-education.net/pronote/eleve.html?fd=1&login=true`;
 
-  const browser = await puppeteer.launch({ headless: true });
+  const browser = await puppeteer.launch({executablePath: '/usr/bin/chromium-browser', headless: true });
   const page = await browser.newPage();
   await page.goto(PRONOTE_URL, { waitUntil: "networkidle0" }); // wait until page load
 
   // Login user
   await page.type("#id_53", PRONOTE_USER);
   await page.type("#id_54", PRONOTE_PASS);
-  const wait = new Promise(resolve => {
-    setTimeout(() => {
-      resolve();
-    }, 2000);
-  });
 
+  await page.waitForSelector("#id_43");
   await Promise.all([
     page.click("#id_43"),
-    page.waitForNavigation({ waitUntil: "networkidle0" }),
-    wait
   ]);
+
+ await page.waitForSelector(".EmploiDuTemps_Element");
 
   // Get page HTML
   let bodyHTML = await page.evaluate(() => document.body.innerHTML);
@@ -52,4 +48,6 @@ async function pronote_scraper() {
   return absence;
 }
 
-module.exports = pronote_scraper;
+
+module.exports = { pronote_scraper };
+
