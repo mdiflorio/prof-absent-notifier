@@ -15,11 +15,9 @@ async function pronote_scraper() {
   await page.type("#id_54", PRONOTE_PASS);
 
   await page.waitForSelector("#id_43");
-  await Promise.all([
-    page.click("#id_43"),
-  ]);
+  await Promise.all([page.click("#id_43")]);
 
- await page.waitForSelector(".EmploiDuTemps_Element");
+  await page.waitForSelector(".EmploiDuTemps_Element");
 
   // Get page HTML
   let bodyHTML = await page.evaluate(() => document.body.innerHTML);
@@ -40,7 +38,11 @@ async function pronote_scraper() {
         .text();
 
       const note = $(this).text();
-      absence.push({ subject, note });
+
+      // Make sure entries are not empty.
+      if (note !== "" && subject !== "") {
+        absence.push({ subject, note });
+      }
     });
 
   await browser.close();
@@ -48,6 +50,4 @@ async function pronote_scraper() {
   return absence;
 }
 
-
 module.exports = { pronote_scraper };
-
